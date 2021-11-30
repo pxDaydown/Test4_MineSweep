@@ -1,4 +1,5 @@
 package com.example.saolei;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -79,7 +80,6 @@ public class Block extends androidx.appcompat.widget.AppCompatButton {
         } else {
             setNumberOfSurroundingMines(numberOfMinesInSurrounding);//根据周围雷数设置翻开状态及显示数字
         }
-
     }
 
     //显示周围雷数

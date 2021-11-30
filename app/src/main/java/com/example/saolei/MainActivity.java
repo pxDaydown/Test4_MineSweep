@@ -1,20 +1,18 @@
 package com.example.saolei;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -31,8 +29,6 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     public boolean flagging = false;//是否标记
@@ -43,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private String time = "00:00:00";
     private TextView txtTimer;
     private String Level = "Easy";//游戏难度
-    private final Handler timer = new Handler();
+    private Handler timer = new Handler();
     private int Seconds = 0;
     public boolean isTimerStarted = false;
     public int numberOfRowsInMineField = 9;
@@ -53,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private int Opened = 0;//目前已翻开个数
     private int Flagged = 0;//目前被标记个数
     private Block[][] blocks;
-//    private Timer winTest;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,31 +59,7 @@ public class MainActivity extends AppCompatActivity {
         openbtn = (Button) findViewById(R.id.open);
         flagbtn = (Button) findViewById(R.id.flag);
         init();
-//        winTest = new Timer(true);
-//        winTest.schedule(timerTask, 1000, 1000);
     }
-
-//    TimerTask timerTask = new TimerTask() {
-//        public void run() {
-//            // 检查是否获胜
-//            if (checkGameWin()) {
-//                winGame();
-//                Message message = new Message();
-//                message.what = 1;
-//                handler.sendMessage(message);
-//            }
-//        }
-//    };
-//
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            if (msg.what==1){
-//                //回到主线程执行结束操作
-//                Log.e("=====", "结束计时");
-//            }
-//        }
-//    };
 
     @Override
     //接收菜单界面传回的参数进行处理
@@ -191,10 +161,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (temp.hasMine()) {
                                     finishGame();
                                 }
-//                                // 检查是否获胜
-//                                if (checkGameWin()) {
-//                                    winGame();
-//                                }
                             }
                         }
                         //标记
@@ -225,8 +191,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //游戏获胜
-    public void winGame() {
-//        winTest.cancel();
+    private void winGame() {
         stopTimer();
         isTimerStarted = false;
         isGameOver = true;
@@ -256,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
 
     //游戏失败
     private void finishGame() {
-//        winTest.cancel();
         stopTimer();
         isGameOver = true;
         isTimerStarted = false;
@@ -321,8 +285,7 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<String> list = new ArrayList<String>();
                     while ((str = br.readLine()) != null) {
                         if (i == 0) {
-                            i++;
-                            continue;
+                            i++; continue;
                         }
                         i++;
                         list.add(str);
@@ -497,24 +460,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //判断游戏是否胜利
-    public boolean checkGameWin() {
+    private boolean checkGameWin() {
         if (isGameOver) return false;
-        boolean judger = true;
-        for (int row = 0; row < numberOfRowsInMineField; row++) {
-            for (int column = 0; column < numberOfColumnsInMineField; column++) {
-                if(blocks[row][column].hasMine()&&blocks[row][column].isCovered()){
-                    judger = false;
-                }
-            }
+        //标记数和翻开数之和等于方块总数，并且标记数等于雷数则游戏胜利
+        if (Flagged + Opened == numberOfColumnsInMineField * numberOfRowsInMineField
+                && totalNumberOfMines == Flagged) {
+            return true;
         }
-        return judger;
-
-
-//        //标记数和翻开数之和等于方块总数，并且标记数等于雷数则游戏胜利
-//        if (Flagged + Opened == numberOfColumnsInMineField * numberOfRowsInMineField
-//                && totalNumberOfMines == Flagged) {
-//            return true;
-//        }
-//        return false;
+        return false;
     }
 }
